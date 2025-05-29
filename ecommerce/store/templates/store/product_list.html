@@ -1,0 +1,54 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<h2 class="mb-4">Available Products</h2>
+
+<form method="get" class="input-group mb-4">
+    <input type="text" name="q" class="form-control" placeholder="Search products..." value="{{ request.GET.q }}">
+    <button class="btn btn-outline-secondary" type="submit">Search</button>
+</form>
+<div class="mb-3">
+    <form method="get" class="row g-2">
+        <div class="col-md-4 mb-2">
+            <select name="category" class="form-select" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == selected_category %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Preserve search query if user also typed one -->
+        <input type="hidden" name="q" value="{{ request.GET.q }}">
+    </form>
+    
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in products %}
+    <div class="col">
+        <div class="card h-100">
+            {% if product.image %}
+            <a href="{% url 'product_detail' product.id %}">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
+            </a>
+            
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ product.title }}</h5>
+                <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                <p class="card-text"><strong>₹{{ product.price }}</strong></p>
+                <form method="post" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <div class="mb-2">
+                        <label>Quantity:</label>
+                        <input type="number" name="quantity" value="1" min="1" class="form-control" style="width:100px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

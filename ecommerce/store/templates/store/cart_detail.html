@@ -1,0 +1,46 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<h2>Your Cart</h2>
+
+{% if cart_items %}
+<div class="row row-cols-1 row-cols-md-2 g-4">
+    {% for item in cart_items %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" class="img-fluid rounded-start" alt="{{ item.product.title }}">
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'product_detail' item.product.id %}">{{ item.product.title }}</a>
+                        </h5>
+                        <p class="card-text">Price: ₹{{ item.product.price }}</p>
+                        <p class="card-text">Subtotal: ₹{{ item.subtotal }}</p>
+
+                        <form method="post" action="{% url 'update_cart_quantity' item.product.id %}" class="d-flex mb-2">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control me-2" style="width:80px;">
+                            <button type="submit" class="btn btn-sm btn-secondary">Update</button>
+                        </form>
+
+                        <a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-sm btn-danger">Remove</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<hr>
+<h4 class="mt-4">Total: ₹{{ total }}</h4>
+<a href="{% url 'checkout' %}" class="btn btn-success mt-2">Proceed to Checkout</a>
+{% else %}
+<p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}

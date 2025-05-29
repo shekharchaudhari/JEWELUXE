@@ -1,0 +1,42 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-4">Welcome to My Store</h1>
+    <p class="lead">Discover our latest jewellery collections and best offers.</p>
+    <a href="{% url 'product_list' %}" class="btn btn-success btn-lg">Shop Now</a>
+</div>
+
+<h2 class="mb-3">Categories</h2>
+<div class="row mb-4">
+    {% for category in categories %}
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">{{ category.name }}</h5>
+                <!-- Optional: Link to category-wise product list -->
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h2 class="mb-3">Featured Products</h2>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in featured_products %}
+    <div class="col">
+        <div class="card h-100">
+            {% if product.image %}
+            <a href="{% url 'product_detail' product.id %}">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
+            </a>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ product.title }}</h5>
+                <p class="card-text"><strong>₹{{ product.price }}</strong></p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
