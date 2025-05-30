@@ -1,42 +1,58 @@
 {% extends 'store/base.html' %}
-
+{% load static %}
 {% block content %}
-<div class="text-center mb-5">
-    <h1 class="display-4">Welcome to My Store</h1>
-    <p class="lead">Discover our latest jewellery collections and best offers.</p>
-    <a href="{% url 'product_list' %}" class="btn btn-success btn-lg">Shop Now</a>
+
+
+<!-- Hero Banner -->
+<div class="p-5 text-white rounded-3 mb-5 shadow-lg" style="background: url('{% static "images/banner.jpg" %}') no-repeat center center; background-size: cover;">
+  <div class="container text-center">
+    <h1 class="display-3 fw-bold">Discover Timeless Jewellery</h1>
+    <p class="lead">Explore our exclusive ring collection, handcrafted with elegance and care.</p>
+    <a href="{% url 'product_list' %}" class="btn btn-light btn-lg shadow">Shop Now</a>
+  </div>
 </div>
 
-<h2 class="mb-3">Categories</h2>
-<div class="row mb-4">
-    {% for category in categories %}
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">{{ category.name }}</h5>
-                <!-- Optional: Link to category-wise product list -->
-            </div>
+<!-- Categories Section -->
+<div class="container my-5">
+  <h3 class="mb-4">Shop by Category</h3>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for category in categories %}
+        <div class="col">
+            <a href="{% url 'product_list' %}?category={{ category.id }}" class="text-decoration-none text-dark">
+                <div class="card shadow-sm h-100 border-0 text-center">
+                    {% if category.image %}
+                    <img src="{{ category.image}}" class="card-img-top rounded-top" alt="{{ category.name }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ category.name }}</h5>
+                    </div>
+                </div>
+            </a>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 
-<h2 class="mb-3">Featured Products</h2>
-<div class="row row-cols-1 row-cols-md-3 g-4">
+<!-- Featured Products Section -->
+<div class="container mb-5">
+  <h2 class="text-center mb-4">Featured Products</h2>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for product in featured_products %}
     <div class="col">
-        <div class="card h-100">
-            {% if product.image %}
-            <a href="{% url 'product_detail' product.id %}">
-                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
-            </a>
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ product.title }}</h5>
-                <p class="card-text"><strong>₹{{ product.price }}</strong></p>
-            </div>
+      <div class="card h-100 border-0 shadow-sm">
+        {% if product.image %}
+        <a href="{% url 'product_detail' product.id %}">
+          <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
+        </a>
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ product.title }}</h5>
+          <p class="card-text"><strong>₹{{ product.price }}</strong></p>
         </div>
+      </div>
     </div>
     {% endfor %}
+  </div>
 </div>
+
 {% endblock %}
